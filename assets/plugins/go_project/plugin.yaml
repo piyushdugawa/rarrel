@@ -1,4 +1,4 @@
-name: go-api
+name: go-project
 version: "1.0.0"
 
 prompts:
@@ -6,15 +6,15 @@ prompts:
     message: "Enter project name"
     type: string
 
-  - name: framework
-    message: "Choose framework"
-    type: select
-    choices: [gin, chi]
+  - name: module_path
+    message: Enter module path"
+    type: string
 
 tools:
   - name: go
     required: true
     version: ">=1.24"
+    
   - name: git
     required: false
     version: "inherit"
