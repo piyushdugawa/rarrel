@@ -1,18 +1,19 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
+var Version = "dev"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "internal",
-	Short: "A brief description of your application",
+	Use:   "rrl",
+	Short: "Rarrel - Generate Projects using Templates",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Cobra Cli implemented")
+		cmd.Help()
 	},
 }
 

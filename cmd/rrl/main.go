@@ -1,12 +1,9 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/piyushdugawa/rarrel/internal/cmd"
+	"github.com/piyushdugawa/rarrel/internal/rrl/cmd"
 )
 
 func main() {
-	fmt.Println("Rarrel - Generate Projects using Templates")
 	cmd.Execute()
 }
