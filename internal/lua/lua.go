@@ -9,19 +9,22 @@ import (
 )
 
 func Prompt(L *lua.LState) int {
-	lv := L.Get(-1)
-	if str, ok := lv.(lua.LString); ok {
-		// lv is LString
+	title := L.Get(1)
+	prompt := L.Get(2)
+	placeholder := L.Get(3)
+	if title_str, ok := title.(lua.LString); ok {
 		var ret_val string
 		huh.NewInput().
-			Title(string(str)).
+			Title(string(title_str)).
+			Prompt(string(prompt.(lua.LString))).
+			Placeholder(string(placeholder.(lua.LString))).
 			Value(&ret_val).
 			Run() // this is blocking...
 
 		L.Push(lua.LString(ret_val))
 
 	}
-	if lv.Type() != lua.LTString {
+	if title.Type() != lua.LTString {
 		L.RaiseError("string required")
 		return 0
 	}
