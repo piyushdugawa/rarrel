@@ -31,3 +31,6 @@ go.work.sum
 
 # Build files
 build/
+
+# Temp files
+.tmp/
