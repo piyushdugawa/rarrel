@@ -19,7 +19,7 @@ func Prompt(L *lua.LState) int {
 			Prompt(string(prompt.(lua.LString))).
 			Placeholder(string(placeholder.(lua.LString))).
 			Value(&ret_val).
-			Run() // this is blocking...
+			Run()
 
 		L.Push(lua.LString(ret_val))
 

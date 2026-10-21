@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/piyushdugawa/rarrel/internal/rrl/cmd"
+	"github.com/piyushdugawa/rarrel/internal/cmd"
 )
 
 func main() {
