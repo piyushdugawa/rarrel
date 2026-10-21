@@ -4,8 +4,10 @@ Name = "go-project"
 Version = "0.0.1"
 
 ProjectName = prompt("Enter Projcet Name:")
+print(ProjectName)
 
 ModulePath = prompt("Enter Module Path:")
+print(ModulePath)
 
 Tools = {
     {
