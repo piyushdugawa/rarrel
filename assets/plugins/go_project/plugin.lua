@@ -22,5 +22,8 @@ Tools = {
     }
 }
 
+exist("go")
+exist("git")
+
 Templates = "./templates"
 
