@@ -3,7 +3,7 @@ name := "Rarrel"
 cmd := "rrl"
 build_dir := "build"
 version := "v0.0.1-alpha.2"
-version_path := "github.com/piyushdugawa/rarrel/internal/rrl/cmd.Version"
+version_path := "github.com/piyushdugawa/rarrel/internal/cmd.Version"
 
 go_home := env("GO_HOME", "~/go")
 go_bin := go_home / "bin"
