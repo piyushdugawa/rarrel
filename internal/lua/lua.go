@@ -1,6 +1,8 @@
 package lua
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 
 	lua "github.com/yuin/gopher-lua"
@@ -32,7 +34,11 @@ func Prompt(L *lua.LState) int {
 }
 
 func LoadLua(plugin string) {
-	plugin_path := filepath.Join("./assets/plugins", plugin, "plugin.lua")
+	home_dir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	plugin_path := filepath.Join(home_dir, ".rarrel/plugins", plugin, "plugin.lua")
 	L := lua.NewState()
 	defer L.Close()
 	L.SetGlobal("prompt", L.NewFunction(Prompt))
