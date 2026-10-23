@@ -1,3 +1,5 @@
+local tools = require("tools")
+
 print("\nGo Project Lua Plugin Loaded!\n")
 
 Name = "go-project"
@@ -22,8 +24,7 @@ Tools = {
     }
 }
 
-exist("go")
-exist("git")
+tools.chk_tools(Tools)
 
 Templates = "./templates"
 
