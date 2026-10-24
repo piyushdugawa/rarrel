@@ -10,18 +10,26 @@ import (
 	huh "charm.land/huh/v2"
 )
 
+func pmt(title_str lua.LString, prompt lua.LValue, placeholder lua.LValue, ret_val *string) {
+	huh.NewInput().
+		Title(string(title_str)).
+		Prompt(string(prompt.(lua.LString))).
+		Placeholder(string(placeholder.(lua.LString))).
+		Value(ret_val).
+		Run()
+	if *ret_val == "" {
+		*ret_val = string(placeholder.(lua.LString))
+	}
+}
+
 func Prompt(L *lua.LState) int {
 	title := L.Get(1)
 	prompt := L.Get(2)
 	placeholder := L.Get(3)
 	if title_str, ok := title.(lua.LString); ok {
 		var ret_val string
-		huh.NewInput().
-			Title(string(title_str)).
-			Prompt(string(prompt.(lua.LString))).
-			Placeholder(string(placeholder.(lua.LString))).
-			Value(&ret_val).
-			Run()
+
+		pmt(title_str, prompt, placeholder, &ret_val)
 
 		L.Push(lua.LString(ret_val))
 
