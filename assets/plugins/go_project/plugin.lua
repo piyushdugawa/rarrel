@@ -16,14 +16,22 @@ Tools = {
     {
         name = "go",
         required = true,
-        version = ">=1.24"
+        version = "1.24",
+        version_arg = "version"
     },
     {
         name = "git",
+        required = true,
+        version_arg = "--version"
+    },
+    {
+        name = "jq",
         required = false,
-        version = "inherit"
+        version_arg = "--version"
     }
 }
+
+verifyTools(Tools)
 
 Templates = "./templates"
 
