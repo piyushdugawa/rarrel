@@ -4,51 +4,82 @@ import (
 	"fmt"
 	"os/exec"
 	"regexp"
-	"strings"
 
 	lua "github.com/yuin/gopher-lua"
 )
 
 type Tool struct {
 	Name     string
-	Version  string
+	Version  *string
 	VerArgs  string
 	Required bool
 }
 
-// var tools []Tool
+var tools []Tool
 
 func VerifyTools(L *lua.LState) int {
-	lv := L.Get(1) // get the value at the top of the stack
+	lv := L.Get(1)
 	if tbl, ok := lv.(*lua.LTable); ok {
-		// lv is LTable
-		fmt.Println(L.ObjLen(tbl))
 		for i := 1; i <= L.ObjLen(tbl); i++ {
 			toolTbl := tbl.RawGetInt(i).(*lua.LTable)
 
 			var tool Tool
 			tool.Name = toolTbl.RawGetString("name").String()
-			tool.Version = toolTbl.RawGetString("version").String()
+
+			if v := toolTbl.RawGetString("version"); v != lua.LNil {
+				if s, ok := v.(lua.LString); ok {
+					version := string(s)
+					tool.Version = &version
+				}
+			}
+
 			tool.VerArgs = toolTbl.RawGetString("version_arg").String()
 			b, err := LuaValueToBool(toolTbl.RawGetString("required"))
 			if err != nil {
-				// handle error
+				fmt.Println("Error:", err)
 			}
 			tool.Required = b
-			// tools = append(tools, tool)
-			exists(tool.Name)
-
-			output, err := exec.Command(tool.Name, tool.VerArgs).CombinedOutput()
-			if err != nil {
-				L.RaiseError("%s", err.Error())
-				return 0
-			}
-
-			fmt.Println(extractVersion(string(output)))
-
+			tools = append(tools, tool)
 		}
+		process(tools)
 	}
 	return 0
+}
+
+func process(tools []Tool) {
+	for _, tool := range tools {
+
+		_, err := exists(tool.Name)
+		if err == nil {
+			output, err := exec.Command(tool.Name, tool.VerArgs).CombinedOutput()
+			if err != nil {
+				fmt.Println("Error:", err)
+			}
+
+			extractedVersion := extractVersion(string(output))
+
+			if tool.Version == nil {
+				fmt.Printf("%s \033[1mv%s\033[0m(\033[1;34mInherited\033[0m) \033[1;34m✓\033[0m\n", tool.Name, extractedVersion)
+			} else {
+				if extractedVersion > *tool.Version || extractedVersion == *tool.Version {
+					fmt.Printf("%s \033[1mv%s\033[0m (\033[1m>=%s\033[0m) \033[1;32m✓\033[0m\n", tool.Name, extractedVersion, *tool.Version)
+				} else {
+					fmt.Printf("%s \033[1mv%s\033[0m found but %s \033[1mv%s\033[0m is required \033[1;31m\u2718\033[0m\n", tool.Name, extractedVersion, tool.Name, *tool.Version)
+					return
+				}
+			}
+		}
+
+		if err != nil {
+			if !tool.Required {
+				fmt.Printf("%s \033[1;31m\u2718\033[0m  \033[1;33m--Ignored\033[0m\n", tool.Name)
+			} else {
+				fmt.Printf("%s \033[1;31m\u2718\033[0m\n", tool.Name)
+				return
+			}
+		}
+
+	}
 }
 
 func LuaValueToBool(v lua.LValue) (bool, error) {
@@ -59,43 +90,12 @@ func LuaValueToBool(v lua.LValue) (bool, error) {
 	return bool(b), nil
 }
 
-// func ToolExist(L *lua.LState) int {
-// 	Ltool := L.Get(1)
-// 	tool := Ltool.String()
-
-// 	path, err := exists(tool)
-// 	if err != nil {
-// 		L.Push(lua.LFalse)
-// 		return 1
-// 	}
-
-// 	L.Push(lua.LString(path))
-// 	L.Push(lua.LTrue)
-// 	return 2
-
-// }
-
 func exists(tool string) (string, error) {
 	path, err := exec.LookPath(tool)
 	if err != nil {
-		fmt.Printf("%s is either not installed or not in PATH\n", tool)
 		return "", err
 	}
-	fmt.Printf("%s found at %s\n", tool, path)
 	return path, nil
-}
-
-func ChkInstalledVer(L *lua.LState) int {
-	LCmd := L.Get(1)
-	cmnd := strings.Fields(LCmd.String())
-	output, err := exec.Command(cmnd[0], cmnd[1.]).CombinedOutput()
-	if err != nil {
-		L.RaiseError("%s", err.Error())
-		return 0
-	}
-
-	L.Push(lua.LString(extractVersion(string(output))))
-	return 1
 }
 
 var versionRegex = regexp.MustCompile(`\d+(?:\.\d+){1,2}`)

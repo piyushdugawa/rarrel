@@ -1,5 +1,3 @@
-local tools = require("tools")
-
 print("\nGo Project Lua Plugin Loaded!\n")
 
 Name = "go-project"
@@ -20,19 +18,17 @@ Tools = {
     },
     {
         name = "git",
-        required = false,
-        version = "1.00",
+        required = true,
         version_arg = "--version"
     },
     {
-        name = "git",
+        name = "jq",
         required = false,
         version_arg = "--version"
     }
 }
 
 verifyTools(Tools)
--- tools.chk_tools(Tools)
 
 Templates = "./templates"
 
