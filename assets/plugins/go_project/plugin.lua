@@ -3,10 +3,13 @@ print("\nGo Project Lua Plugin Loaded!\n")
 Name = "go-project"
 Version = "0.0.1"
 
-ProjectName = prompt("Enter Project Name:", "? ", "rrl")
+local pwd = io.popen("pwd"):read("*l")
+local basename = pwd:match("([^/]+)/*$")
+
+ProjectName = prompt("Enter Project Name:", "? ", basename)
 print("\27[34m◆\27[0m \27[1;97mProject Name:\27[0m \27[38;5;201m" .. ProjectName .. "\27[0m")
 
-ModulePath = prompt("Enter Module Path:", "? ", "rarrel")
+ModulePath = prompt("Enter Module Path:", "? ", "github.com/piyushdugawa/rarrel")
 print("\27[34m◆\27[0m \27[1;97mModule:\27[0m \27[38;5;201m" .. ModulePath .. "\27[0m")
 
 Tools = {

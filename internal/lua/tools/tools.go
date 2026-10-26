@@ -47,6 +47,7 @@ func VerifyTools(L *lua.LState) int {
 }
 
 func process(tools []Tool) {
+	fmt.Println()
 	for _, tool := range tools {
 
 		_, err := exists(tool.Name)
