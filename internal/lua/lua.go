@@ -1,6 +1,8 @@
 package lua
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/piyushdugawa/rarrel/internal/lua/tools"
@@ -9,18 +11,26 @@ import (
 	huh "charm.land/huh/v2"
 )
 
+func pmt(title_str lua.LString, prompt lua.LValue, placeholder lua.LValue, ret_val *string) {
+	huh.NewInput().
+		Title(string(title_str)).
+		Prompt(string(prompt.(lua.LString))).
+		Placeholder(string(placeholder.(lua.LString))).
+		Value(ret_val).
+		Run()
+	if *ret_val == "" {
+		*ret_val = string(placeholder.(lua.LString))
+	}
+}
+
 func Prompt(L *lua.LState) int {
 	title := L.Get(1)
 	prompt := L.Get(2)
 	placeholder := L.Get(3)
 	if title_str, ok := title.(lua.LString); ok {
 		var ret_val string
-		huh.NewInput().
-			Title(string(title_str)).
-			Prompt(string(prompt.(lua.LString))).
-			Placeholder(string(placeholder.(lua.LString))).
-			Value(&ret_val).
-			Run()
+
+		pmt(title_str, prompt, placeholder, &ret_val)
 
 		L.Push(lua.LString(ret_val))
 
@@ -33,9 +43,11 @@ func Prompt(L *lua.LState) int {
 }
 
 func LoadLua(plugin string) {
-	plugin_path := filepath.Join("./assets/plugins", plugin, "plugin.lua")
-	plugin_dir := filepath.Dir(plugin_path)
-
+	home_dir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	plugin_path := filepath.Join(home_dir, ".rarrel/plugins", plugin, "plugin.lua")
 	L := lua.NewState()
 	defer L.Close()
 
