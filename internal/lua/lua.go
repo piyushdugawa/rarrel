@@ -43,7 +43,9 @@ func LoadLua(plugin string) {
 
 	L.SetGlobal("PLUGIN_DIR", lua.LString(plugin_dir))
 	L.SetGlobal("prompt", L.NewFunction(Prompt))
-	L.SetGlobal("exist", L.NewFunction(tools.ToolExist))
+	// L.SetGlobal("exist", L.NewFunction(tools.ToolExist))
+	L.SetGlobal("extractVer", L.NewFunction(tools.ChkInstalledVer))
+	L.SetGlobal("verifyTools", L.NewFunction(tools.VerifyTools))
 
 	if err := L.DoString(`
 	package.path = PLUGIN_DIR .. "/?.lua;" ..

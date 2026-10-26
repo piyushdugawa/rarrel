@@ -15,16 +15,24 @@ Tools = {
     {
         name = "go",
         required = true,
-        version = ">=1.24"
+        version = "1.24",
+        version_arg = "version"
     },
     {
         name = "git",
         required = false,
-        version = "inherit"
+        version = "1.00",
+        version_arg = "--version"
+    },
+    {
+        name = "git",
+        required = false,
+        version_arg = "--version"
     }
 }
 
-tools.chk_tools(Tools)
+verifyTools(Tools)
+-- tools.chk_tools(Tools)
 
 Templates = "./templates"
 
