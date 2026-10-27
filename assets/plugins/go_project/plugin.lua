@@ -12,6 +12,7 @@ print("\27[34m◆\27[0m \27[1;97mProject Name:\27[0m \27[38;5;201m" .. ProjectNa
 ModulePath = prompt("Enter Module Path:", "? ", "github.com/piyushdugawa/rarrel")
 print("\27[34m◆\27[0m \27[1;97mModule:\27[0m \27[38;5;201m" .. ModulePath .. "\27[0m")
 
+
 Tools = {
     {
         name = "go",
