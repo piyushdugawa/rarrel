@@ -32,7 +32,9 @@ Tools = {
     }
 }
 
+GoVersion = Tools[1].version
+
 verifyTools(Tools)
 
-Templates = "./templates"
+renderTemplates("./templates")
 
