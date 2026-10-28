@@ -71,10 +71,12 @@ func collectGlobals(L *lua.LState) map[string]any {
 func RenderTemplate(L *lua.LState) int {
 	LsrcDir := L.Get(1)
 	srcDir := filepath.Join(config.PluginDir, LsrcDir.String())
+	LdestDir := L.Get(2)
+	destDir := LdestDir.String()
 
 	vars := collectGlobals(L)
 
-	if err := generate.RenderTemplates(srcDir, "./", vars); err != nil {
+	if err := generate.RenderTemplates(srcDir, destDir, vars); err != nil {
 		panic(err)
 	}
 
