@@ -73,10 +73,11 @@ func LoadLua(plugin string) {
 	package.path = PLUGIN_DIR .. "/?.lua;" ..
 	PLUGIN_DIR .. "/?/plugin.lua;" ..
 	package.path`); err != nil {
-		panic(err)
+		fmt.Println("Error:", err)
 	}
 
 	if err := L.DoFile(plugin_path); err != nil {
-		panic(err)
+		fmt.Println("No Plugin found!")
+		fmt.Println("Error:", err)
 	}
 }

@@ -135,7 +135,7 @@ func RenderTemplate(L *lua.LState) int {
 
 	if confirm {
 		if err := generate.RenderTemplates(srcDir, destDir, vars); err != nil {
-			panic(err)
+			fmt.Println("Error:", err)
 		}
 		return 0
 	}
