@@ -9,6 +9,16 @@ local basename = pwd:match("([^/]+)/*$")
 ProjectName = prompt("Enter Project Name:", "? ", basename)
 print("\27[34m◆\27[0m \27[1;97mProject Name:\27[0m \27[38;5;201m" .. ProjectName .. "\27[0m")
 
+local dest
+
+if ProjectName == basename then
+    dest = "./"
+else
+    dest = ProjectName
+end
+
+print("\27[34m◆\27[0m \27[1;97mDestination:\27[0m \27[38;5;201m" .. dest .. "\27[0m")
+
 ModulePath = prompt("Enter Module Path:", "? ", "github.com/piyushdugawa/rarrel")
 print("\27[34m◆\27[0m \27[1;97mModule:\27[0m \27[38;5;201m" .. ModulePath .. "\27[0m")
 
@@ -34,5 +44,4 @@ Tools = {
 
 verifyTools(Tools)
 
-Templates = "./templates"
-
+renderTemplates("./templates", dest)
