@@ -1,8 +1,10 @@
 package templates
 
 import (
+	"fmt"
 	"path/filepath"
 
+	"charm.land/huh/v2"
 	"github.com/piyushdugawa/rarrel/internal/config"
 	"github.com/piyushdugawa/rarrel/internal/generate"
 	lua "github.com/yuin/gopher-lua"
@@ -122,9 +124,23 @@ func RenderTemplate(L *lua.LState) int {
 
 	vars := collectGlobals(L)
 
-	if err := generate.RenderTemplates(srcDir, destDir, vars); err != nil {
-		panic(err)
+	var confirm bool
+
+	huh.NewConfirm().
+		Title("Are you sure?").
+		Affirmative("Yes!").
+		Negative("No.").
+		Value(&confirm).
+		Run()
+
+	if confirm {
+		if err := generate.RenderTemplates(srcDir, destDir, vars); err != nil {
+			panic(err)
+		}
+		return 0
 	}
 
-	return 0
+	fmt.Println("Operation cancelled by User!!!")
+
+	return 1
 }

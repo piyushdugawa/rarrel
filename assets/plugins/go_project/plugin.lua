@@ -17,6 +17,8 @@ else
     dest = ProjectName
 end
 
+print("\27[34m◆\27[0m \27[1;97mDestination:\27[0m \27[38;5;201m" .. dest .. "\27[0m")
+
 ModulePath = prompt("Enter Module Path:", "? ", "github.com/piyushdugawa/rarrel")
 print("\27[34m◆\27[0m \27[1;97mModule:\27[0m \27[38;5;201m" .. ModulePath .. "\27[0m")
 
