@@ -31,13 +31,59 @@ func luaToGoSeen(v lua.LValue, seen map[*lua.LTable]bool) any {
 		seen[v] = true
 		defer delete(seen, v)
 
-		// Preserve mixed tables by collecting all keys.
-		result := make(map[any]any)
+		entries := make([]struct {
+			key   lua.LValue
+			value lua.LValue
+		}, 0, v.Len())
+		isArray := true
+		maxIndex := 0
 
 		v.ForEach(func(key, value lua.LValue) {
-			result[luaToGoSeen(key, seen)] = luaToGoSeen(value, seen)
+			entries = append(entries, struct {
+				key   lua.LValue
+				value lua.LValue
+			}{key: key, value: value})
+
+			index, ok := key.(lua.LNumber)
+			if !ok || index < 1 || index != lua.LNumber(int(index)) {
+				isArray = false
+				return
+			}
+			if int(index) > maxIndex {
+				maxIndex = int(index)
+			}
 		})
 
+		if len(entries) > 0 && isArray && maxIndex == len(entries) {
+			result := make([]any, len(entries))
+			for _, entry := range entries {
+				index := int(entry.key.(lua.LNumber)) - 1
+				result[index] = luaToGoSeen(entry.value, seen)
+			}
+			return result
+		}
+
+		allStringKeys := true
+		for _, entry := range entries {
+			if _, ok := entry.key.(lua.LString); !ok {
+				allStringKeys = false
+				break
+			}
+		}
+
+		if allStringKeys {
+			result := make(map[string]any, len(entries))
+			for _, entry := range entries {
+				result[string(entry.key.(lua.LString))] = luaToGoSeen(entry.value, seen)
+			}
+			return result
+		}
+
+		// Preserve mixed tables by collecting all keys.
+		result := make(map[any]any, len(entries))
+		for _, entry := range entries {
+			result[luaToGoSeen(entry.key, seen)] = luaToGoSeen(entry.value, seen)
+		}
 		return result
 
 	case *lua.LFunction:

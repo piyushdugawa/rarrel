@@ -40,9 +40,6 @@ Tools = {
     }
 }
 
-GoVersion = Tools[1].version
-
 verifyTools(Tools)
 
 renderTemplates("./templates", dest)
-
