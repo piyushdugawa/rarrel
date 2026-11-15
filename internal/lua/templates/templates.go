@@ -127,7 +127,7 @@ func RenderTemplate(L *lua.LState) int {
 	var confirm bool
 
 	huh.NewConfirm().
-		Title("Are you sure?").
+		Title("Do you want to proceed?").
 		Affirmative("Yes!").
 		Negative("No.").
 		Value(&confirm).

@@ -8,6 +8,7 @@ import (
 	"github.com/piyushdugawa/rarrel/internal/config"
 	"github.com/piyushdugawa/rarrel/internal/lua/templates"
 	"github.com/piyushdugawa/rarrel/internal/lua/tools"
+	"github.com/piyushdugawa/rarrel/internal/ui"
 	lua "github.com/yuin/gopher-lua"
 
 	huh "charm.land/huh/v2"
@@ -44,6 +45,24 @@ func Prompt(L *lua.LState) int {
 	return 1
 }
 
+func Select(L *lua.LState) int {
+	LTitle := L.Get(1)
+	LOptions := L.Get(2)
+
+	// Convert to Lua table
+	options, ok := LOptions.(*lua.LTable)
+	if !ok {
+		panic("options is not a table")
+	}
+
+	title := LTitle.String()
+
+	var val string
+	ui.Selection(title, options, &val)
+	L.Push(lua.LString(val))
+	return 1
+}
+
 func LoadLua(plugin string) {
 
 	HOME_DIR, err := os.UserHomeDir()
@@ -66,6 +85,7 @@ func LoadLua(plugin string) {
 
 	L.SetGlobal("PLUGIN_DIR", lua.LString(plugin_dir))
 	L.SetGlobal("prompt", L.NewFunction(Prompt))
+	L.SetGlobal("select", L.NewFunction(Select))
 	L.SetGlobal("verifyTools", L.NewFunction(tools.VerifyTools))
 	L.SetGlobal("renderTemplates", L.NewFunction(templates.RenderTemplate))
 
